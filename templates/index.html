@@ -1,9 +1,15 @@
-$def with (news)
+$def with (news,user_name)
 
-<div class="new_entry"><a href="/add">new entry</a>
-<br><br>~<br><br>
-</div>
-
+<p class="top_menu">
+$if user_name:
+    hi, $user_name
+    ~ <a href="/logout">log out</a>
+    ~ cpanel
+$else:
+    <a href="/login">sign in</a>
+~ <a href="/add">new entry</a>
+</p>
+<br>
 $if news:
     $for entry in reversed(news):
         <div>

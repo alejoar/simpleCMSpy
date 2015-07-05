@@ -47,8 +47,9 @@ td {
     float: center;
 }
 
-.new_entry {
-    font-size: 20pt;
+.top_menu {
+    font-family: 'Cutive Mono', serif;
+    font-size: 11pt;
     text-align: center;
 }
 
@@ -66,12 +67,13 @@ a:visited {
 
 /* mouse over link */
 a:hover {
-    color: #2F2F2F;
+    color: #FFFFFF;
+    background-color: #60B6FF
 }
 
 /* selected link */
 a:active {
-    color: #6A0E00;
+    color: #000000;
     text-decoration:none;
 }
 

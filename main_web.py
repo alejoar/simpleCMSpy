@@ -1,24 +1,65 @@
-import web, os,sqlite3
+import web, os, sqlite3 as db
 from simpleCMSpy import admin_web
 
 urls = (
     '/', 'Index',
     '/add', 'Add',
-    '/setup', 'Setup'
+    '/setup', 'Setup',
+    '/login', 'Login',
+    '/logout', 'Logout'
 )
 app = web.application(urls, globals())
 render = web.template.render('templates/', base='layout')
 
+def read_data():
+    news = admin_web.read()
+    cookie = web.cookies(user_name=None)
+    return news, cookie
+
 class Index(object):
     def GET(self):
-        news = admin_web.read()
+        news, cookie = read_data()
+
         if news != None:
-            if len(news) != 0:
-                return render.index(news = news)
-            else:
-                return render.index(news = None)
+            if len(news) == 0:
+                news = None
+            return render.index(news = news, user_name = cookie.user_name)
+
         else:
             return render.setup()
+
+class Login(object):
+    def GET(self):
+        return render.login(error=None)
+
+    def POST(self):
+        form = web.input(user_name=None, password=None)
+        if form.user_name and form.password:
+            conn = db.connect("database/simpleCMS.db")
+            cursor = conn.cursor()
+            cursor.execute("select password from users where name = ?",(form.user_name,))
+            hashed_pw = cursor.fetchone()
+            if hashed_pw is not None:
+                hashed_pw = hashed_pw[0]
+            conn.close()
+            if hashed_pw == hash(form.password):
+                # we need more security, this is spoof prone.. (TODO: session cookie..)
+                web.setcookie('user_name', form.user_name, 3600)
+                raise web.seeother('/')
+            else:
+                return render.login(error="wrong user or pass, sorry nigguh")
+        else:
+            return render.login(error="you gotta fill both fields broh")
+
+class Logout(object):
+    def GET(self):
+        news, cookie = read_data()
+        web.setcookie('user_name', cookie.user_name, -1)
+        raise web.seeother('/')
+
+class Add(object):
+    def GET(self):
+        return render.add_form()
 
     def POST(self):
         form = web.input(author="unknown", title="no title", text=None)
@@ -28,13 +69,7 @@ class Index(object):
             form.title = "no title"
         if form.text != "":
             admin_web.add(form.title, form.text, form.author)
-            news = admin_web.read()
-        return render.index(news = news)
-
-
-class Add(object):
-    def GET(self):
-        return render.add_form()
+        raise web.seeother('/')
 
 class Setup(object):
     def GET(self):
@@ -50,7 +85,7 @@ class Setup(object):
         form = web.input(user_name=None, password=None)
         db_filename = "database/simpleCMS.db"
         schema_filename = "database/schema.sql"
-        conn = sqlite3.connect(db_filename)
+        conn = db.connect(db_filename)
         f = open(schema_filename, 'rt')
         schema = f.read()
         conn.executescript(schema)
