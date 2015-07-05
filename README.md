@@ -7,4 +7,11 @@ The web version doesn't have a user verification system yet, whereas the termina
 
 I made this program in a few hours mainly to culminate my python lessons and to learn sqlite3 and web.py
 
-![Alt text](/simpleCMSpy.png?raw=true).
+Web version:
+![Alt text](/simpleCMSpy.png?raw=true)
+
+Terminal version:
+![Alt text](/simpleCMSpy_2.png?raw=true)
+
+
+
