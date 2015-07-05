@@ -53,6 +53,12 @@ td {
     text-align: center;
 }
 
+.error {
+    color: #FFFFFF;
+    background-color: #FF4F48;
+    font-weight: bold;
+}
+
 /* unvisited link */
 a:link {
     color: #000000;

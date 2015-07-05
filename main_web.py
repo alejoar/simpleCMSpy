@@ -6,21 +6,24 @@ urls = (
     '/add', 'Add',
     '/setup', 'Setup',
     '/login', 'Login',
-    '/logout', 'Logout'
+    '/logout', 'Logout',
+    '/rem', 'Rem'
 )
 app = web.application(urls, globals())
 render = web.template.render('templates/', base='layout')
 
-def read_data():
-    news = admin_web.read()
+def user_is_admin():
     cookie = web.cookies(user_name=None)
-    return news, cookie
+    if cookie.user_name is not None:
+        return True
+    return False
 
 class Index(object):
     def GET(self):
-        news, cookie = read_data()
+        news = admin_web.read()
+        cookie = web.cookies(user_name=None)
 
-        if news != None:
+        if news is not None:
             if len(news) == 0:
                 news = None
             return render.index(news = news, user_name = cookie.user_name)
@@ -35,26 +38,16 @@ class Login(object):
     def POST(self):
         form = web.input(user_name=None, password=None)
         if form.user_name and form.password:
-            conn = db.connect("database/simpleCMS.db")
-            cursor = conn.cursor()
-            cursor.execute("select password from users where name = ?",(form.user_name,))
-            hashed_pw = cursor.fetchone()
-            if hashed_pw is not None:
-                hashed_pw = hashed_pw[0]
-            conn.close()
-            if hashed_pw == hash(form.password):
-                # we need more security, this is spoof prone.. (TODO: session cookie..)
-                web.setcookie('user_name', form.user_name, 3600)
+            if admin_web.login(form.user_name,form.password):
                 raise web.seeother('/')
             else:
-                return render.login(error="wrong user or pass, sorry nigguh")
+                return render.login(error="wrong user name or password")
         else:
-            return render.login(error="you gotta fill both fields broh")
+            return render.login(error="fill both fields..")
 
 class Logout(object):
     def GET(self):
-        news, cookie = read_data()
-        web.setcookie('user_name', cookie.user_name, -1)
+        web.setcookie('user_name', "", -1)
         raise web.seeother('/')
 
 class Add(object):
@@ -69,6 +62,13 @@ class Add(object):
             form.title = "no title"
         if form.text != "":
             admin_web.add(form.title, form.text, form.author)
+        raise web.seeother('/')
+
+class Rem(object):
+    def GET(self):
+        user_data = web.input()
+        if user_is_admin():
+            admin_web.rem(user_data.id)
         raise web.seeother('/')
 
 class Setup(object):

@@ -11,7 +11,7 @@ config = {
     'author_email': '',
     'version': '0.1',
     'install_requires': ['web'],
-    'packages': ['NAME'],
+    'packages': ['simpleCMSpy'],
     'scripts': [],
     'name': 'simpleCMSpy'
 }

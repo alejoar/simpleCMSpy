@@ -4,7 +4,6 @@ $def with (news,user_name)
 $if user_name:
     hi, $user_name
     ~ <a href="/logout">log out</a>
-    ~ cpanel
 $else:
     <a href="/login">sign in</a>
 ~ <a href="/add">new entry</a>
@@ -21,9 +20,14 @@ $if news:
             </table>
             <table class="title">
                 <tr><td class="content">$entry[3]</td></tr>
-                <tr><td><br></tr></td>
+                <tr><td>
+                $if user_name:
+                    <p class="top_menu"><a href="/rem?id=$entry[4]">remove</a></p>
+                $else:
+                    <br>
+                </tr></td>
                 <tr><td class="separator">~ ~ ~</tr></td>
-                <tr><td><br></tr></td>
+                <tr><td><br></td></tr>
             </table>
         </div>
 $else:

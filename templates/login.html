@@ -1,8 +1,11 @@
 $def with (error)
 <div>
-    $if error:
-        <p style="error">$error</p>
+    <table class="title">
+        <tr><td>~ sign in ~</td></tr>
+    </table>
     <form class="form" action="/login" method="POST">
+        $if error:
+            <table width="300px" align="center"><tr><td class="center"><p class="error">$error</p></td></tr></table>
      <table width="300px" align="center">
          <tr><td class="left">
             user name
@@ -18,7 +21,9 @@ $def with (error)
 
      <table align="center">
         <tr>
-            <input class="submit" type="submit">
+            <td class="center">
+                <input class="submit" type="submit">
+            </td>
         </tr>
      </table>
 
