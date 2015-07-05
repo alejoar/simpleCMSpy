@@ -1,5 +1,5 @@
 # simpleCMSpy
-a simple CMS made in python
+a minimal CMS made in python
 
 This simple CMS includes a terminal version (main.py) and a web based version (main_web.py) which launchs by default on your localhost:8080.
 
