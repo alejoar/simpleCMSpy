@@ -1,0 +1,28 @@
+$def with (news)
+
+<div class="new_entry"><a href="/add">new entry</a>
+<br><br>~<br><br>
+</div>
+
+$if news:
+    $for entry in reversed(news):
+        <div>
+            <table class="title">
+                <tr><td>~ $entry[0] ~</td></tr>
+            </table>
+            <table class="title">
+                <tr><td class="author">by $entry[1]</td><td class="date" align="right">$entry[2]</td></tr>
+            </table>
+            <table class="title">
+                <tr><td class="content">$entry[3]</td></tr>
+                <tr><td><br></tr></td>
+                <tr><td class="separator">~ ~ ~</tr></td>
+                <tr><td><br></tr></td>
+            </table>
+        </div>
+$else:
+    <div>
+        <table class="title">
+                <tr><td class="center">no entires</td></tr>
+        </table>
+    </div>
